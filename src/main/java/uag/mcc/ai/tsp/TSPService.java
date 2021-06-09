@@ -3,43 +3,29 @@ package uag.mcc.ai.tsp;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import static uag.mcc.ai.tsp.CityService.TOTAL_CITIES;
 
 @Slf4j
 public class TSPService {
 
-    private static final int TOTAL_CITIES = 20;
     private static final int TOTAL_TRIPS = 100;
 
     private final List<Trip> trips;
-    private final Map<Integer, City> citiesMap;
+    CityService cityService;
 
-    public TSPService() {
+    public TSPService(CityService cityService) {
+        this.cityService = cityService;
         this.trips = new ArrayList<>();
-        this.citiesMap = new HashMap<>();
-    }
-
-    public void generateCities() {
-
-        while (citiesMap.size() < TOTAL_CITIES) {
-            City city = RandomizeUtils.createCityWithRandomCoordinates();
-            if (!citiesMap.containsValue(city)) {
-                int cityId = citiesMap.size() + 1;
-                city.setId(cityId);
-                citiesMap.put(cityId, city);
-            }
-        }
-
-        log.info("Created {} unique cities with random coordinates", citiesMap.size());
-        citiesMap.forEach((key, value) -> log.info(value.toString()));
     }
 
     public void generateInitialTrips() {
 
         for (int i = 0; i < TOTAL_TRIPS; i++) {
-            Trip trip = new Trip(RandomizeUtils.generateRandomRoute(TOTAL_CITIES));
+            int[] route = RandomizeUtils.generateRandomRoute(TOTAL_CITIES);
+            double totalDistance = calculateTotalRouteDistance(route);
+            Trip trip = new Trip(route, totalDistance);
             trips.add(trip);
         }
 
@@ -48,6 +34,23 @@ public class TSPService {
         for (int i = 0; i < TOTAL_TRIPS; i++) {
             log.info("Trip {}: {}", i + 1, trips.get(i));
         }
+    }
+
+    private double calculateTotalRouteDistance(int[] route) {
+        double totalDistance = 0;
+
+        for (int i = 0; i < route.length; i++) {
+            City currentCity = cityService.getCity(route[i]);
+            City targetCity;
+            if (i + 1 < route.length) {
+                targetCity = cityService.getCity(i + 1);
+            } else {
+                targetCity = cityService.getCity(route[0]);
+            }
+            totalDistance += currentCity.calculateDistanceToCity(targetCity);
+        }
+
+        return totalDistance;
     }
 
 }

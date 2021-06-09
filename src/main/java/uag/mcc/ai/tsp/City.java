@@ -28,4 +28,10 @@ public class City {
         return Objects.hash(x, y);
     }
 
+    public double calculateDistanceToCity(City targetCity) {
+        int x = Math.abs(targetCity.getX() - getX());
+        int y = Math.abs(targetCity.getY() - getY());
+        return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+    }
+
 }

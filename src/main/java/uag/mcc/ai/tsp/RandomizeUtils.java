@@ -16,13 +16,10 @@ public class RandomizeUtils {
     public static int[] generateRandomRoute(int numberOfCities) {
         int[] array = new int[numberOfCities];
 
-        // creating the array with numbers from 1 - 20 that represent the
-        // 20 cities
         for (int i = 0; i < array.length; i++) {
-            array[i] = i + 1;
+            array[i] = i;
         }
 
-        // since the array is sorted, we need to randomly permute it
         arrayRandomPermutation(array);
         return array;
     }
