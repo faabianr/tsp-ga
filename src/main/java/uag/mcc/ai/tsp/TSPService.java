@@ -11,6 +11,7 @@ import java.util.Map;
 public class TSPService {
 
     private static final int TOTAL_CITIES = 20;
+    private static final int TOTAL_TRIPS = 100;
 
     private final List<Trip> trips;
     private final Map<Integer, City> citiesMap;
@@ -33,6 +34,20 @@ public class TSPService {
 
         log.info("Created {} unique cities with random coordinates", citiesMap.size());
         citiesMap.forEach((key, value) -> log.info(value.toString()));
+    }
+
+    public void generateInitialTrips() {
+
+        for (int i = 0; i < TOTAL_TRIPS; i++) {
+            Trip trip = new Trip(RandomizeUtils.generateRandomRoute(TOTAL_CITIES));
+            trips.add(trip);
+        }
+
+        log.info("Generated {} random trips", trips.size());
+
+        for (int i = 0; i < TOTAL_TRIPS; i++) {
+            log.info("Trip {}: {}", i + 1, trips.get(i));
+        }
     }
 
 }
