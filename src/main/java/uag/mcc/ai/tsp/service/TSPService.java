@@ -2,6 +2,7 @@ package uag.mcc.ai.tsp.service;
 
 import lombok.extern.slf4j.Slf4j;
 import uag.mcc.ai.tsp.model.City;
+import uag.mcc.ai.tsp.model.Generation;
 import uag.mcc.ai.tsp.model.Trip;
 import uag.mcc.ai.tsp.util.RandomizeUtils;
 
@@ -10,19 +11,24 @@ import static uag.mcc.ai.tsp.service.CityService.TOTAL_CITIES;
 @Slf4j
 public class TSPService {
 
-    private static final int TOTAL_TRIPS = 100;
-
-    private final Trip[] trips;
+    private final int generationCount;
     private final CityService cityService;
+    private final Generation currentGeneration;
 
     public TSPService(CityService cityService) {
+        this.generationCount = 1;
         this.cityService = cityService;
-        this.trips = new Trip[TOTAL_TRIPS];
+        this.currentGeneration = buildInitialGeneration();
     }
 
-    public void generateInitialTrips() {
+    public int getGenerationCount() {
+        return this.generationCount;
+    }
 
-        for (int i = 0; i < TOTAL_TRIPS; i++) {
+    private Generation buildInitialGeneration() {
+        Trip[] trips = new Trip[Generation.TOTAL_TRIPS_PER_GENERATION];
+
+        for (int i = 0; i < Generation.TOTAL_TRIPS_PER_GENERATION; i++) {
             int[] route = RandomizeUtils.generateRandomRoute(TOTAL_CITIES);
             double totalDistance = calculateTotalRouteDistance(route);
             Trip trip = new Trip(route, totalDistance);
@@ -31,9 +37,11 @@ public class TSPService {
 
         log.info("Generated {} random trips", trips.length);
 
-        for (int i = 0; i < TOTAL_TRIPS; i++) {
+        for (int i = 0; i < Generation.TOTAL_TRIPS_PER_GENERATION; i++) {
             log.info("Trip {}: {}", i + 1, trips[i]);
         }
+
+        return new Generation(trips);
     }
 
     private double calculateTotalRouteDistance(int[] route) {

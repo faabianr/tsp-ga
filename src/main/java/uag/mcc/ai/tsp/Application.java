@@ -7,7 +7,7 @@ public class Application {
 
     public static void main(String[] args) {
         TSPService tspService = new TSPService(new CityService(false));
-        tspService.generateInitialTrips();
+        System.out.println("Generation count: " + tspService.getGenerationCount());
     }
 
 }
