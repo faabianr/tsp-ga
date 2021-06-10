@@ -1,11 +1,15 @@
-package uag.mcc.ai.tsp;
+package uag.mcc.ai.tsp.service;
 
 import lombok.extern.slf4j.Slf4j;
+import uag.mcc.ai.tsp.model.City;
+import uag.mcc.ai.tsp.model.Trip;
+import uag.mcc.ai.tsp.service.CityService;
+import uag.mcc.ai.tsp.util.RandomizeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static uag.mcc.ai.tsp.CityService.TOTAL_CITIES;
+import static uag.mcc.ai.tsp.service.CityService.TOTAL_CITIES;
 
 @Slf4j
 public class TSPService {
@@ -13,7 +17,7 @@ public class TSPService {
     private static final int TOTAL_TRIPS = 100;
 
     private final List<Trip> trips;
-    CityService cityService;
+    private final CityService cityService;
 
     public TSPService(CityService cityService) {
         this.cityService = cityService;

@@ -1,6 +1,8 @@
-package uag.mcc.ai.tsp;
+package uag.mcc.ai.tsp.service;
 
 import lombok.extern.slf4j.Slf4j;
+import uag.mcc.ai.tsp.util.RandomizeUtils;
+import uag.mcc.ai.tsp.model.City;
 
 import java.util.HashMap;
 import java.util.Map;

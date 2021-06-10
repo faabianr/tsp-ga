@@ -1,4 +1,6 @@
-package uag.mcc.ai.tsp;
+package uag.mcc.ai.tsp.util;
+
+import uag.mcc.ai.tsp.model.City;
 
 import java.util.Random;
 

@@ -1,4 +1,4 @@
-package uag.mcc.ai.tsp;
+package uag.mcc.ai.tsp.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
