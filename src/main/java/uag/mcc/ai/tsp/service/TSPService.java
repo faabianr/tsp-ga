@@ -3,11 +3,7 @@ package uag.mcc.ai.tsp.service;
 import lombok.extern.slf4j.Slf4j;
 import uag.mcc.ai.tsp.model.City;
 import uag.mcc.ai.tsp.model.Trip;
-import uag.mcc.ai.tsp.service.CityService;
 import uag.mcc.ai.tsp.util.RandomizeUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static uag.mcc.ai.tsp.service.CityService.TOTAL_CITIES;
 
@@ -16,12 +12,12 @@ public class TSPService {
 
     private static final int TOTAL_TRIPS = 100;
 
-    private final List<Trip> trips;
+    private final Trip[] trips;
     private final CityService cityService;
 
     public TSPService(CityService cityService) {
         this.cityService = cityService;
-        this.trips = new ArrayList<>();
+        this.trips = new Trip[TOTAL_TRIPS];
     }
 
     public void generateInitialTrips() {
@@ -30,13 +26,13 @@ public class TSPService {
             int[] route = RandomizeUtils.generateRandomRoute(TOTAL_CITIES);
             double totalDistance = calculateTotalRouteDistance(route);
             Trip trip = new Trip(route, totalDistance);
-            trips.add(trip);
+            trips[i] = trip;
         }
 
-        log.info("Generated {} random trips", trips.size());
+        log.info("Generated {} random trips", trips.length);
 
         for (int i = 0; i < TOTAL_TRIPS; i++) {
-            log.info("Trip {}: {}", i + 1, trips.get(i));
+            log.info("Trip {}: {}", i + 1, trips[i]);
         }
     }
 
