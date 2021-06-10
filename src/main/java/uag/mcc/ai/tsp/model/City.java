@@ -1,5 +1,6 @@
 package uag.mcc.ai.tsp.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
@@ -7,6 +8,7 @@ import lombok.ToString;
 import java.util.Objects;
 
 @ToString
+@AllArgsConstructor
 @Builder
 @Data
 public class City {
