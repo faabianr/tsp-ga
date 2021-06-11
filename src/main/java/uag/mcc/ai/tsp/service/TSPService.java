@@ -25,13 +25,17 @@ public class TSPService {
         return this.generationCount;
     }
 
+    public void startSimulation() {
+        currentGeneration.startTournament();
+    }
+
     private Generation buildInitialGeneration() {
         Trip[] trips = new Trip[Generation.TOTAL_TRIPS_PER_GENERATION];
 
         for (int i = 0; i < Generation.TOTAL_TRIPS_PER_GENERATION; i++) {
             int[] route = RandomizeUtils.generateRandomRoute(TOTAL_CITIES);
             double totalDistance = calculateTotalRouteDistance(route);
-            Trip trip = new Trip(route, totalDistance);
+            Trip trip = new Trip(i, route, totalDistance);
             trips[i] = trip;
         }
 

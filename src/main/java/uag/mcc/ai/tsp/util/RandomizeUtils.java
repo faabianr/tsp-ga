@@ -9,6 +9,10 @@ public class RandomizeUtils {
     private RandomizeUtils() {
     }
 
+    public static int randomNumber(int maxNumber) {
+        return (int) (Math.random() * maxNumber);
+    }
+
     public static City createCityWithRandomCoordinates() {
         int x = (int) (Math.random() * 100);
         int y = (int) (Math.random() * 100);

@@ -9,6 +9,7 @@ import lombok.ToString;
 @Data
 public class Trip {
 
+    private int id;
     private int[] route;
     private double totalDistance;
 
