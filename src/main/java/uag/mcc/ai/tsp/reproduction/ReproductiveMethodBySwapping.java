@@ -10,7 +10,8 @@ public class ReproductiveMethodBySwapping implements ReproductiveMethod {
     @Override
     public int[] apply(int[] array) {
         log.info("applying reproductive method by swapping two sub-arrays");
-        return new int[0];
+        // TODO implement method
+        return array;
     }
 
     @Override

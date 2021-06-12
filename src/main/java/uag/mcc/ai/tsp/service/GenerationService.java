@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import uag.mcc.ai.tsp.model.City;
 import uag.mcc.ai.tsp.model.Generation;
 import uag.mcc.ai.tsp.model.Trip;
+import uag.mcc.ai.tsp.reproduction.ReproductiveMethod;
+import uag.mcc.ai.tsp.reproduction.ReproductiveMethodsProvider;
 import uag.mcc.ai.tsp.util.RandomizeUtils;
 
 import java.util.Comparator;
@@ -23,11 +25,13 @@ public class GenerationService {
 
     private final int generationCount;
     private final CityService cityService;
+    private final ReproductiveMethodsProvider reproductiveMethodsProvider;
     private final Generation currentGeneration;
 
-    public GenerationService(CityService cityService) {
+    public GenerationService(CityService cityService, ReproductiveMethodsProvider reproductiveMethodsProvider) {
         generationCount = 0;
         this.cityService = cityService;
+        this.reproductiveMethodsProvider = reproductiveMethodsProvider;
         this.currentGeneration = buildInitialGeneration();
     }
 
@@ -47,10 +51,16 @@ public class GenerationService {
             );
 
             Trip bestParticipant = findBestParticipant(participants);
-
-
             log.info("best participant of tournament #{}: {}", i, bestParticipant);
+            bestParticipant.setRoute(applyReproduction(bestParticipant.getRoute()));
+            log.info("registering child of best participant = {}", bestParticipant);
+            currentGeneration.getTrips()[bestParticipant.getId()] = bestParticipant;
         }
+    }
+
+    private int[] applyReproduction(int[] route) {
+        ReproductiveMethod reproductiveMethod = reproductiveMethodsProvider.getRandomReproductiveMethod();
+        return reproductiveMethod.apply(route);
     }
 
     private Trip findBestParticipant(Set<Trip> participants) {
