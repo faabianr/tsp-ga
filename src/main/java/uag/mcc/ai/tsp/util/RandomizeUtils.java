@@ -9,6 +9,11 @@ public class RandomizeUtils {
     private RandomizeUtils() {
     }
 
+    public static int randomNumberZeroOrOne() {
+        Random random = new Random();
+        return (random.nextInt(2) + 1)  - 1;
+    }
+
     public static int randomNumber(int maxNumber) {
         return (int) (Math.random() * maxNumber);
     }

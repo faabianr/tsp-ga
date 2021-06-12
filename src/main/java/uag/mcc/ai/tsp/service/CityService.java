@@ -22,6 +22,11 @@ public class CityService {
         } else {
             generateStaticCities();
         }
+        printGeneratedCities();
+    }
+
+    public void printGeneratedCities() {
+        citiesMap.forEach((key, value) -> log.info(value.toString()));
     }
 
     private void generateStaticCities() {
@@ -61,7 +66,6 @@ public class CityService {
         }
 
         log.info("Created {} unique cities with random coordinates", citiesMap.size());
-        citiesMap.forEach((key, value) -> log.info(value.toString()));
     }
 
     public City getCity(int id) {
