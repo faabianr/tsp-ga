@@ -8,10 +8,7 @@ import uag.mcc.ai.tsp.reproduction.ReproductiveMethod;
 import uag.mcc.ai.tsp.reproduction.ReproductiveMethodsProvider;
 import uag.mcc.ai.tsp.util.RandomizeUtils;
 
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 
 import static uag.mcc.ai.tsp.service.CityService.TOTAL_CITIES;
 import static uag.mcc.ai.tsp.util.RandomizeUtils.randomNumber;
@@ -23,13 +20,13 @@ public class GenerationService {
     private static final int TOTAL_TRIPS_PER_GENERATION = 100;
     private static final int TOURNAMENT_PARTICIPANTS_NUMBER = 5;
 
-    private final int generationCount;
+    private int generationCount;
     private final CityService cityService;
     private final ReproductiveMethodsProvider reproductiveMethodsProvider;
     private final Generation currentGeneration;
 
     public GenerationService(CityService cityService, ReproductiveMethodsProvider reproductiveMethodsProvider) {
-        generationCount = 0;
+        this.generationCount = 0;
         this.cityService = cityService;
         this.reproductiveMethodsProvider = reproductiveMethodsProvider;
         this.currentGeneration = buildInitialGeneration();
@@ -38,12 +35,17 @@ public class GenerationService {
     public void startSimulation() {
         log.info("starting simulation of {} generations using {} cities, {} trips per generation and {} participants per tournament",
                 TOTAL_GENERATIONS, TOTAL_CITIES, TOTAL_TRIPS_PER_GENERATION, TOURNAMENT_PARTICIPANTS_NUMBER);
-        startTournamentsForCurrentGeneration();
+
+        for (int i = 0; i < TOTAL_GENERATIONS; i++) {
+            generationCount = i;
+            log.info("starting simulation of generation #{}", generationCount);
+            startTournamentsForCurrentGeneration();
+            log.info("best of generation #{}: {}", generationCount, currentGeneration.getBestTrip());
+        }
     }
 
     public void startTournamentsForCurrentGeneration() {
-        // TODO use TOTAL_TRIPS_PER_GENERATION
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < TOTAL_TRIPS_PER_GENERATION; i++) {
             log.info("Picking {} participants for tournament #{}", TOURNAMENT_PARTICIPANTS_NUMBER, i);
             Set<Trip> participants = pickRandomParticipants(currentGeneration.getTrips());
             participants.forEach(participant ->
@@ -56,6 +58,22 @@ public class GenerationService {
             bestParticipant.setTotalDistance(calculateTotalRouteDistance(bestParticipant.getRoute()));
             log.info("registering child of best participant = {}", bestParticipant);
             currentGeneration.getTrips()[bestParticipant.getId()] = bestParticipant;
+        }
+
+        printTrips(currentGeneration.getTrips());
+        setBestOfGeneration(currentGeneration);
+    }
+
+    private void setBestOfGeneration(Generation generation) {
+        Set<Trip> generationTrips = new HashSet<>();
+        Collections.addAll(generationTrips, generation.getTrips());
+        Trip bestOfGeneration = findBestParticipant(generationTrips);
+        currentGeneration.setBestTrip(bestOfGeneration);
+    }
+
+    private void printTrips(Trip[] trips) {
+        for (int i = 0; i < trips.length; i++) {
+            log.info("Trip {}: {}", i + 1, trips[i]);
         }
     }
 
@@ -93,9 +111,7 @@ public class GenerationService {
 
         log.info("Generated {} random trips", trips.length);
 
-        for (int i = 0; i < TOTAL_TRIPS_PER_GENERATION; i++) {
-            log.info("Trip {}: {}", i + 1, trips[i]);
-        }
+        printTrips(trips);
 
         return new Generation(trips);
     }
