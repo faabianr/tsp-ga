@@ -53,6 +53,7 @@ public class GenerationService {
             Trip bestParticipant = findBestParticipant(participants);
             log.info("best participant of tournament #{}: {}", i, bestParticipant);
             bestParticipant.setRoute(applyReproduction(bestParticipant.getRoute()));
+            bestParticipant.setTotalDistance(calculateTotalRouteDistance(bestParticipant.getRoute()));
             log.info("registering child of best participant = {}", bestParticipant);
             currentGeneration.getTrips()[bestParticipant.getId()] = bestParticipant;
         }
