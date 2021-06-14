@@ -44,10 +44,15 @@ public class GenerationService {
             log.debug("starting simulation of generation #{}", generationCount);
             startTournamentsForCurrentGeneration();
             log.debug("best of generation #{}: {}", generationCount, currentGeneration.getBestTrip());
-            chartService.updateBestDistancesChart(generationCount, currentGeneration.getBestTrip().getTotalDistance());
+
+            try {
+                chartService.updateBestDistancesChart(generationCount, currentGeneration.getBestTrip().getTotalDistance());
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
-        chartService.displayBestDistancesChart();
     }
 
     public void startTournamentsForCurrentGeneration() {

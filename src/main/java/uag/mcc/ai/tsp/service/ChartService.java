@@ -1,10 +1,9 @@
 package uag.mcc.ai.tsp.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.knowm.xchart.QuickChart;
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
-import uag.mcc.ai.tsp.model.Generation;
+import org.knowm.xchart.XYChartBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,12 @@ import java.util.List;
 @Slf4j
 public class ChartService {
 
-    XYChart bestDistancesChart;
+    private static final String BEST_DISTANCE_CHART_TITLE = "Best Distances Per Generation";
+    private static final String BEST_DISTANCE_CHART_SERIES_NAME = "Fitness Function";
+    private static final String BEST_DISTANCE_CHART_X_AXIS_TITLE = "Generation";
+    private static final String BEST_DISTANCE_CHART_Y_AXIS_TITLE = "Best Distance";
+
+    private SwingWrapper<XYChart> swingWrapper;
 
     private final List<Double> bestDistancesChartXValues;
     private final List<Double> bestDistancesChartYValues;
@@ -22,19 +26,30 @@ public class ChartService {
         this.bestDistancesChartYValues = new ArrayList<>();
     }
 
-    public void updateBestRouteSChart(Generation generation) {
-
-    }
 
     public void updateBestDistancesChart(double x, double y) {
-        this.bestDistancesChartXValues.add(x);
-        this.bestDistancesChartYValues.add(y);
+        bestDistancesChartXValues.add(x);
+        bestDistancesChartYValues.add(y);
+
+        displayXYChart();
     }
 
-    public void displayBestDistancesChart() {
-        bestDistancesChart = QuickChart.getChart("Best Distances Per Generation", "X", "Y", "y(x)",
-                bestDistancesChartXValues, bestDistancesChartYValues);
-        new SwingWrapper(bestDistancesChart).displayChart();
+    public void displayXYChart() {
+        if (swingWrapper == null) {
+            XYChart bestDistancesChart = new XYChartBuilder()
+                    .width(1200).height(600).title(BEST_DISTANCE_CHART_TITLE)
+                    .xAxisTitle(BEST_DISTANCE_CHART_X_AXIS_TITLE).yAxisTitle(BEST_DISTANCE_CHART_Y_AXIS_TITLE).build();
+
+            bestDistancesChart.addSeries(BEST_DISTANCE_CHART_SERIES_NAME, bestDistancesChartXValues, bestDistancesChartYValues, null);
+
+            swingWrapper = new SwingWrapper<>(bestDistancesChart);
+            swingWrapper.displayChart();
+        } else {
+            swingWrapper.getXChartPanel().getChart().updateXYSeries(BEST_DISTANCE_CHART_SERIES_NAME, bestDistancesChartXValues, bestDistancesChartYValues, null);
+            swingWrapper.getXChartPanel().revalidate();
+            swingWrapper.getXChartPanel().repaint();
+        }
+
     }
 
 }
