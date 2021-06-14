@@ -1,6 +1,7 @@
 package uag.mcc.ai.tsp.reproduction;
 
 import lombok.extern.slf4j.Slf4j;
+import uag.mcc.ai.tsp.util.RandomizeUtils;
 
 @Slf4j
 public class ReproductiveMethodBySwapping implements ReproductiveMethod {
@@ -12,7 +13,7 @@ public class ReproductiveMethodBySwapping implements ReproductiveMethod {
         log.debug("applying reproductive method by swapping two sub-arrays");
 
         int startIndexSubArray1 = 1;
-        int startIndexSubArray2 = (array.length / 2);
+        int startIndexSubArray2 = (array.length / 2) + RandomizeUtils.randomNumberZeroOrOne();
         int temp;
 
         log.debug("startIndexSubArray1 = {}, startIndexSubArray2 = {}", startIndexSubArray1, startIndexSubArray2);

@@ -13,7 +13,7 @@ public class ReproductiveMethodsProvider {
         log.debug("registering ReproductiveMethodBySwapping at position 0");
         log.debug("registering ReproductiveMethodByReversion at position 1");
         reproductiveMethods[0] = new ReproductiveMethodByReversion();
-        reproductiveMethods[1] = new ReproductiveMethodByReversion();
+        reproductiveMethods[1] = new ReproductiveMethodBySwapping();
     }
 
     public ReproductiveMethod getRandomReproductiveMethod() {

@@ -16,8 +16,8 @@ public class ReproductiveMethodByReversion implements ReproductiveMethod {
     public int[] apply(int[] array) {
         log.debug("applying reproductive method by reversion of sub-array");
 
-        // always respecting first and last 2 elements (max is exclusive, that's why we use -2 instead of -3)
-        int randomLength = RandomizeUtils.randomNumberBetweenRange(1, array.length - 2);
+        // always respecting first and last elements
+        int randomLength = RandomizeUtils.randomNumberBetweenRange(1, array.length - 1);
 
         List<Integer> subArray = new ArrayList<>();
 
