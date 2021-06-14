@@ -10,14 +10,8 @@ public class Generation {
     private Trip[] trips;
     private Trip bestTrip;
 
-
-
     public Generation(Trip[] trips) {
         this.trips = trips;
-    }
-
-    public Trip getBestTrip() {
-        return bestTrip;
     }
 
 }

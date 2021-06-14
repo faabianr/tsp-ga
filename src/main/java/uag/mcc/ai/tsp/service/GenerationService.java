@@ -36,14 +36,14 @@ public class GenerationService {
     }
 
     public void startSimulation() {
-        log.trace("starting simulation of {} generations using {} cities, {} trips per generation and {} participants per tournament",
+        log.debug("starting simulation of {} generations using {} cities, {} trips per generation and {} participants per tournament",
                 TOTAL_GENERATIONS, TOTAL_CITIES, TOTAL_TRIPS_PER_GENERATION, TOURNAMENT_PARTICIPANTS_NUMBER);
 
         for (int i = 0; i < TOTAL_GENERATIONS; i++) {
             generationCount = i;
-            log.trace("starting simulation of generation #{}", generationCount);
+            log.debug("starting simulation of generation #{}", generationCount);
             startTournamentsForCurrentGeneration();
-            log.trace("best of generation #{}: {}", generationCount, currentGeneration.getBestTrip());
+            log.debug("best of generation #{}: {}", generationCount, currentGeneration.getBestTrip());
             chartService.updateBestDistancesChart(generationCount, currentGeneration.getBestTrip().getTotalDistance());
         }
 
@@ -52,25 +52,26 @@ public class GenerationService {
 
     public void startTournamentsForCurrentGeneration() {
 
+        Trip[] children = new Trip[TOTAL_TRIPS_PER_GENERATION];
+
         for (int i = 0; i < TOTAL_TRIPS_PER_GENERATION; i++) {
-            log.trace("Picking {} participants for tournament #{}", TOURNAMENT_PARTICIPANTS_NUMBER, i);
+            log.debug("Picking {} participants for tournament #{}", TOURNAMENT_PARTICIPANTS_NUMBER, i);
             Set<Trip> participants = pickRandomParticipants(currentGeneration.getTrips());
             participants.forEach(participant ->
-                    log.trace("Participant: {}", participant)
+                    log.debug("Participant: {}", participant)
             );
 
             Trip bestParticipant = findBestParticipant(participants);
-            log.trace("best participant of tournament #{}: {}", i, bestParticipant);
+            log.debug("best participant of tournament #{}: {}", i, bestParticipant);
 
             int[] route = applyReproduction(bestParticipant.getRoute());
-
-            bestParticipant.setRoute(applyReproduction(bestParticipant.getRoute()));
-            bestParticipant.setTotalDistance(calculateTotalRouteDistance(bestParticipant.getRoute()));
-            log.trace("registering child of best participant = {}", bestParticipant);
-            currentGeneration.getTrips()[bestParticipant.getId()] = bestParticipant;
+            Trip child = new Trip(i, route, calculateTotalRouteDistance(route));
+            log.debug("registering child of best participant = {}", child);
+            children[i] = child;
         }
 
-        //printTrips(currentGeneration.getTrips());
+        log.debug("replacing parent generation with children");
+        currentGeneration.setTrips(children);
         setBestOfGeneration(currentGeneration);
     }
 
@@ -83,13 +84,14 @@ public class GenerationService {
 
     private void printTrips(Trip[] trips) {
         for (int i = 0; i < trips.length; i++) {
-            log.trace("Trip {}: {}", i + 1, trips[i]);
+            log.debug("Trip {}: {}", i + 1, trips[i]);
         }
     }
 
     private int[] applyReproduction(int[] route) {
+        int[] newArray = route.clone();
         ReproductiveMethod reproductiveMethod = reproductiveMethodsProvider.getRandomReproductiveMethod();
-        return reproductiveMethod.apply(route);
+        return reproductiveMethod.apply(newArray);
     }
 
     private Trip findBestParticipant(Set<Trip> participants) {
@@ -119,7 +121,7 @@ public class GenerationService {
             trips[i] = trip;
         }
 
-        log.trace("Generated {} random trips", trips.length);
+        log.debug("Generated {} random trips", trips.length);
 
         printTrips(trips);
 

@@ -10,16 +10,16 @@ public class ReproductiveMethodsProvider {
 
     public ReproductiveMethodsProvider() {
         this.reproductiveMethods = new ReproductiveMethod[2];
-        log.trace("registering ReproductiveMethodBySwapping at position 0");
-        log.trace("registering ReproductiveMethodByReversion at position 1");
-        reproductiveMethods[0] = new ReproductiveMethodBySwapping();
+        log.debug("registering ReproductiveMethodBySwapping at position 0");
+        log.debug("registering ReproductiveMethodByReversion at position 1");
+        reproductiveMethods[0] = new ReproductiveMethodByReversion();
         reproductiveMethods[1] = new ReproductiveMethodByReversion();
     }
 
     public ReproductiveMethod getRandomReproductiveMethod() {
         int randomIndex = RandomizeUtils.randomNumberZeroOrOne();
         ReproductiveMethod randomlyChosenReproductiveMethod = reproductiveMethods[randomIndex];
-        log.trace("random selection of reproductive method - randomIndex={}, methodName={}",
+        log.debug("random selection of reproductive method - randomIndex={}, methodName={}",
                 randomIndex, randomlyChosenReproductiveMethod.getName());
         return randomlyChosenReproductiveMethod;
     }

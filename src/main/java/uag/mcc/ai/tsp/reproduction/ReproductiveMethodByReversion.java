@@ -14,7 +14,7 @@ public class ReproductiveMethodByReversion implements ReproductiveMethod {
 
     @Override
     public int[] apply(int[] array) {
-        log.trace("applying reproductive method by reversion of sub-array");
+        log.debug("applying reproductive method by reversion of sub-array");
 
         // always respecting first and last 2 elements (max is exclusive, that's why we use -2 instead of -3)
         int randomLength = RandomizeUtils.randomNumberBetweenRange(1, array.length - 2);
@@ -25,16 +25,16 @@ public class ReproductiveMethodByReversion implements ReproductiveMethod {
             subArray.add(array[i]);
         }
 
-        log.trace("original array: {}", array);
-        log.trace("sub-array (length={}): {}", randomLength, subArray);
+        log.debug("original array: {}", array);
+        log.debug("sub-array (length={}): {}", randomLength, subArray);
         Collections.reverse(subArray);
-        log.trace("reversed sub-array: {}", subArray);
+        log.debug("reversed sub-array: {}", subArray);
 
         for (int i = 1; i < randomLength; i++) {
             array[i] = subArray.get(i - 1);
         }
 
-        log.trace("merged array: {}", array);
+        log.debug("merged array: {}", array);
 
         return array;
     }
