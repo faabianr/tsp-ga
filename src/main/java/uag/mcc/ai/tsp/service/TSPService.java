@@ -9,7 +9,8 @@ public class TSPService {
     private final GenerationService generationService;
 
     public TSPService() {
-        generationService = new GenerationService(new CityService(false), new ReproductiveMethodsProvider());
+        generationService = new GenerationService(new CityService(false),
+                new ReproductiveMethodsProvider(), new ChartService());
     }
 
     public void startSimulation() {

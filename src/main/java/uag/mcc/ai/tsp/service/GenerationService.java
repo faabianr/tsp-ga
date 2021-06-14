@@ -22,45 +22,55 @@ public class GenerationService {
 
     private int generationCount;
     private final CityService cityService;
+    private final ChartService chartService;
     private final ReproductiveMethodsProvider reproductiveMethodsProvider;
     private final Generation currentGeneration;
 
-    public GenerationService(CityService cityService, ReproductiveMethodsProvider reproductiveMethodsProvider) {
+    public GenerationService(CityService cityService, ReproductiveMethodsProvider reproductiveMethodsProvider, ChartService chartService) {
         this.generationCount = 0;
         this.cityService = cityService;
+        this.chartService = chartService;
         this.reproductiveMethodsProvider = reproductiveMethodsProvider;
         this.currentGeneration = buildInitialGeneration();
+
     }
 
     public void startSimulation() {
-        log.info("starting simulation of {} generations using {} cities, {} trips per generation and {} participants per tournament",
+        log.trace("starting simulation of {} generations using {} cities, {} trips per generation and {} participants per tournament",
                 TOTAL_GENERATIONS, TOTAL_CITIES, TOTAL_TRIPS_PER_GENERATION, TOURNAMENT_PARTICIPANTS_NUMBER);
 
         for (int i = 0; i < TOTAL_GENERATIONS; i++) {
             generationCount = i;
-            log.info("starting simulation of generation #{}", generationCount);
+            log.trace("starting simulation of generation #{}", generationCount);
             startTournamentsForCurrentGeneration();
-            log.info("best of generation #{}: {}", generationCount, currentGeneration.getBestTrip());
+            log.trace("best of generation #{}: {}", generationCount, currentGeneration.getBestTrip());
+            chartService.updateBestDistancesChart(generationCount, currentGeneration.getBestTrip().getTotalDistance());
         }
+
+        chartService.displayBestDistancesChart();
     }
 
     public void startTournamentsForCurrentGeneration() {
+
         for (int i = 0; i < TOTAL_TRIPS_PER_GENERATION; i++) {
-            log.info("Picking {} participants for tournament #{}", TOURNAMENT_PARTICIPANTS_NUMBER, i);
+            log.trace("Picking {} participants for tournament #{}", TOURNAMENT_PARTICIPANTS_NUMBER, i);
             Set<Trip> participants = pickRandomParticipants(currentGeneration.getTrips());
             participants.forEach(participant ->
-                    log.info("Participant: {}", participant)
+                    log.trace("Participant: {}", participant)
             );
 
             Trip bestParticipant = findBestParticipant(participants);
-            log.info("best participant of tournament #{}: {}", i, bestParticipant);
+            log.trace("best participant of tournament #{}: {}", i, bestParticipant);
+
+            int[] route = applyReproduction(bestParticipant.getRoute());
+
             bestParticipant.setRoute(applyReproduction(bestParticipant.getRoute()));
             bestParticipant.setTotalDistance(calculateTotalRouteDistance(bestParticipant.getRoute()));
-            log.info("registering child of best participant = {}", bestParticipant);
+            log.trace("registering child of best participant = {}", bestParticipant);
             currentGeneration.getTrips()[bestParticipant.getId()] = bestParticipant;
         }
 
-        printTrips(currentGeneration.getTrips());
+        //printTrips(currentGeneration.getTrips());
         setBestOfGeneration(currentGeneration);
     }
 
@@ -73,7 +83,7 @@ public class GenerationService {
 
     private void printTrips(Trip[] trips) {
         for (int i = 0; i < trips.length; i++) {
-            log.info("Trip {}: {}", i + 1, trips[i]);
+            log.trace("Trip {}: {}", i + 1, trips[i]);
         }
     }
 
@@ -109,7 +119,7 @@ public class GenerationService {
             trips[i] = trip;
         }
 
-        log.info("Generated {} random trips", trips.length);
+        log.trace("Generated {} random trips", trips.length);
 
         printTrips(trips);
 
