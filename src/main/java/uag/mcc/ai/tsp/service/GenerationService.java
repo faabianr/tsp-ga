@@ -27,7 +27,7 @@ public class GenerationService {
     private final Generation currentGeneration;
 
     public GenerationService(CityService cityService, ReproductiveMethodsProvider reproductiveMethodsProvider, ChartService chartService) {
-        this.generationCount = 1;
+        this.generationCount = 0;
         this.cityService = cityService;
         this.chartService = chartService;
         this.reproductiveMethodsProvider = reproductiveMethodsProvider;
@@ -46,7 +46,7 @@ public class GenerationService {
             log.debug("best of generation #{}: {}", generationCount, currentGeneration.getBestTrip());
 
             try {
-                chartService.displayCharts(generationCount, currentGeneration.getBestTrip().getTotalDistance(), currentGeneration.getBestTrip().getRoute());
+                chartService.displayCharts(generationCount + 1, currentGeneration.getBestTrip().getTotalDistance(), currentGeneration.getBestTrip().getRoute());
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
