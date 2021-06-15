@@ -34,14 +34,10 @@ public class ChartService {
     }
 
 
-    public void updateBestDistancesChart(double x, double y) {
+    public void displayCharts(double x, double y) {
         bestDistancesChartValues.get(X).add(x);
         bestDistancesChartValues.get(Y).add(y);
 
-        displayCharts();
-    }
-
-    public void displayCharts() {
         if (swingWrapper == null) {
             XYChart bestDistancesChart = new XYChartBuilder().theme(Styler.ChartTheme.Matlab)
                     .width(1200).height(600).title(BEST_DISTANCE_CHART_TITLE)
@@ -64,6 +60,9 @@ public class ChartService {
                     .updateXYSeries(
                             BEST_DISTANCE_CHART_SERIES_NAME, bestDistancesChartValues.get(X), bestDistancesChartValues.get(Y), null
                     );
+
+            swingWrapper.getXChartPanel().getChart().setTitle(String.format("Generation: %s, Best Distance: %s", x, y));
+
             swingWrapper.getXChartPanel().revalidate();
             swingWrapper.getXChartPanel().repaint();
         }
