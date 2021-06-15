@@ -46,7 +46,7 @@ public class GenerationService {
             log.debug("best of generation #{}: {}", generationCount, currentGeneration.getBestTrip());
 
             try {
-                chartService.displayCharts(generationCount, currentGeneration.getBestTrip().getTotalDistance());
+                chartService.displayCharts(generationCount, currentGeneration.getBestTrip().getTotalDistance(), currentGeneration.getBestTrip().getRoute());
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
