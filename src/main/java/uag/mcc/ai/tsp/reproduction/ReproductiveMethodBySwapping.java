@@ -12,7 +12,7 @@ public class ReproductiveMethodBySwapping implements ReproductiveMethod {
     public int[] apply(int[] array) {
         log.debug("applying reproductive method by swapping two sub-arrays");
 
-        int startIndexSubArray1 = 1;
+        int startIndexSubArray1 = 1 + RandomizeUtils.randomNumberBetweenRange(1, array.length / 2);
         int startIndexSubArray2 = (array.length / 2) + RandomizeUtils.randomNumberZeroOrOne();
         int temp;
 
