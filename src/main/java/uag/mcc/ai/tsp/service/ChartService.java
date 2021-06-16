@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
-import org.knowm.xchart.XYSeries;
 import org.knowm.xchart.style.Styler;
 import org.knowm.xchart.style.lines.SeriesLines;
 import org.knowm.xchart.style.markers.Marker;
@@ -35,7 +34,8 @@ public class ChartService {
 
     private final CityService cityService;
     private SwingWrapper<XYChart> swingWrapper;
-
+    private double bestDistanceFound;
+    private int[] bestRouteFound;
     private final Map<String, List<Double>> bestDistancesChartValues;
     private final Map<String, List<Double>> routeChartValues;
 
@@ -59,11 +59,21 @@ public class ChartService {
         }
     }
 
+    private void updateBestDistanceAndRoute(double distance, int[] route) {
+        if (bestDistanceFound == 0) {
+            bestDistanceFound = distance;
+        } else if (distance < bestDistanceFound) {
+            bestDistanceFound = distance;
+            bestRouteFound = route;
+        }
+    }
+
     public void displayCharts(double x, double y, int[] route) {
         bestDistancesChartValues.get(X).add(x);
         bestDistancesChartValues.get(Y).add(y);
 
         setXYForRouteChart(route);
+        updateBestDistanceAndRoute(y, route);
 
         if (swingWrapper == null) {
             XYChart bestDistancesChart = new XYChartBuilder().theme(Styler.ChartTheme.Matlab)
@@ -71,8 +81,9 @@ public class ChartService {
                     .xAxisTitle(BEST_DISTANCE_CHART_X_AXIS_TITLE).yAxisTitle(BEST_DISTANCE_CHART_Y_AXIS_TITLE).build();
 
             bestDistancesChart.getStyler().setMarkerSize(5);
+            bestDistancesChart.getStyler().setChartTitleFont(new Font("Verdana", Font.PLAIN, 12));
             bestDistancesChart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNE);
-            bestDistancesChart.getStyler().setSeriesMarkers(new Marker[]{ SeriesMarkers.CIRCLE });
+            bestDistancesChart.getStyler().setSeriesMarkers(new Marker[]{SeriesMarkers.CIRCLE});
             bestDistancesChart.getStyler().setToolTipsEnabled(true);
             bestDistancesChart.getStyler().setPlotGridLinesVisible(false);
             bestDistancesChart.getStyler().setPlotBorderVisible(false);
@@ -89,12 +100,13 @@ public class ChartService {
 
 
             routeChart.getStyler().setMarkerSize(10);
+            routeChart.getStyler().setChartTitleFont(new Font("Verdana", Font.PLAIN, 12));
             routeChart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNE);
-            routeChart.getStyler().setSeriesMarkers(new Marker[]{ SeriesMarkers.DIAMOND });
-            routeChart.getStyler().setSeriesLines(new BasicStroke[]{ SeriesLines.SOLID });
+            routeChart.getStyler().setSeriesMarkers(new Marker[]{SeriesMarkers.DIAMOND});
+            routeChart.getStyler().setSeriesLines(new BasicStroke[]{SeriesLines.SOLID});
             routeChart.getStyler().setPlotGridLinesVisible(false);
             routeChart.getStyler().setPlotBorderVisible(false);
-            routeChart.getStyler().setSeriesColors(new Color[]{ Color.RED });
+            routeChart.getStyler().setSeriesColors(new Color[]{Color.RED});
             routeChart.getStyler().setToolTipsEnabled(true);
             routeChart.getStyler().setToolTipFont(new Font("Verdana", Font.PLAIN, 10));
             routeChart.getStyler().setToolTipsAlwaysVisible(true);
@@ -102,30 +114,42 @@ public class ChartService {
             swingWrapper = new SwingWrapper<>(Arrays.asList(routeChart, bestDistancesChart));
             swingWrapper.displayChartMatrix();
         } else {
-
-            swingWrapper.getXChartPanel(ROUTE_CHART_INDEX).getChart()
-                    .updateXYSeries(
-                            ROUTE_CHART_SERIES_NAME, routeChartValues.get(X), routeChartValues.get(Y), null
-                    );
-
-            swingWrapper.getXChartPanel(ROUTE_CHART_INDEX).getChart().setTitle(String.format("Generation: %s, Best Route: %s", x, Arrays.toString(route)));
-            swingWrapper.getXChartPanel(ROUTE_CHART_INDEX).revalidate();
-            swingWrapper.getXChartPanel(ROUTE_CHART_INDEX).repaint();
-
-
-            swingWrapper.getXChartPanel(BEST_DISTANCE_CHART_INDEX).getChart()
-                    .updateXYSeries(
-                            BEST_DISTANCE_CHART_SERIES_NAME, bestDistancesChartValues.get(X), bestDistancesChartValues.get(Y), null
-                    );
-
-            swingWrapper.getXChartPanel(BEST_DISTANCE_CHART_INDEX).getChart().setTitle(String.format("Generation: %s, Best Distance: %s", x, y));
-
-            swingWrapper.getXChartPanel(BEST_DISTANCE_CHART_INDEX).revalidate();
-            swingWrapper.getXChartPanel(BEST_DISTANCE_CHART_INDEX).repaint();
-
-
+            updateBestDistanceChart(x, y);
+            updateRouteChart(route, x, null);
         }
 
+    }
+
+    public void updateBestDistanceChart(double x, double y) {
+        swingWrapper.getXChartPanel(BEST_DISTANCE_CHART_INDEX).getChart()
+                .updateXYSeries(
+                        BEST_DISTANCE_CHART_SERIES_NAME, bestDistancesChartValues.get(X), bestDistancesChartValues.get(Y), null
+                );
+
+        swingWrapper.getXChartPanel(BEST_DISTANCE_CHART_INDEX).getChart().setTitle(String.format("Generation: %s, Best Distance: %s", x, y));
+
+        swingWrapper.getXChartPanel(BEST_DISTANCE_CHART_INDEX).revalidate();
+        swingWrapper.getXChartPanel(BEST_DISTANCE_CHART_INDEX).repaint();
+    }
+
+    public void updateRouteChart(int[] route, double x, String title) {
+        if (title == null) {
+            title = String.format("Generation: %s, Best Route: %s", x, Arrays.toString(route));
+        }
+
+        swingWrapper.getXChartPanel(ROUTE_CHART_INDEX).getChart()
+                .updateXYSeries(
+                        ROUTE_CHART_SERIES_NAME, routeChartValues.get(X), routeChartValues.get(Y), null
+                );
+
+        swingWrapper.getXChartPanel(ROUTE_CHART_INDEX).getChart().setTitle(title);
+        swingWrapper.getXChartPanel(ROUTE_CHART_INDEX).revalidate();
+        swingWrapper.getXChartPanel(ROUTE_CHART_INDEX).repaint();
+    }
+
+    public void updateRouteChartWithBestOfGenerations() {
+        String title = String.format("BestDist: %s, BestRoute: %s", bestDistanceFound, Arrays.toString(bestRouteFound));
+        updateRouteChart(bestRouteFound, 0, title);
     }
 
 }

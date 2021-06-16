@@ -53,6 +53,8 @@ public class GenerationService {
             }
         }
 
+        chartService.updateRouteChartWithBestOfGenerations();
+
     }
 
     public void startTournamentsForCurrentGeneration() {
