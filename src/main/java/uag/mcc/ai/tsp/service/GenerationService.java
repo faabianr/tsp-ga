@@ -142,7 +142,7 @@ public class GenerationService {
             City currentCity = cityService.getCity(route[i]);
             City targetCity;
             if (i + 1 < route.length) {
-                targetCity = cityService.getCity(i + 1);
+                targetCity = cityService.getCity(route[i + 1]);
             } else {
                 targetCity = cityService.getCity(route[0]);
             }
