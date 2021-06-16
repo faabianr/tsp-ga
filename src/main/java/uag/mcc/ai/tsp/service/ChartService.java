@@ -64,7 +64,7 @@ public class ChartService {
             bestDistanceFound = distance;
         } else if (distance < bestDistanceFound) {
             bestDistanceFound = distance;
-            bestRouteFound = route;
+            bestRouteFound = route.clone();
         }
     }
 
@@ -126,7 +126,7 @@ public class ChartService {
                         BEST_DISTANCE_CHART_SERIES_NAME, bestDistancesChartValues.get(X), bestDistancesChartValues.get(Y), null
                 );
 
-        swingWrapper.getXChartPanel(BEST_DISTANCE_CHART_INDEX).getChart().setTitle(String.format("Generation: %s, Best Distance: %s", x, y));
+        swingWrapper.getXChartPanel(BEST_DISTANCE_CHART_INDEX).getChart().setTitle(String.format("Generation: %s, Best Distance of Generation: %s", x, y));
 
         swingWrapper.getXChartPanel(BEST_DISTANCE_CHART_INDEX).revalidate();
         swingWrapper.getXChartPanel(BEST_DISTANCE_CHART_INDEX).repaint();
@@ -148,7 +148,7 @@ public class ChartService {
     }
 
     public void updateRouteChartWithBestOfGenerations() {
-        String title = String.format("BestDist: %s, BestRoute: %s", bestDistanceFound, Arrays.toString(bestRouteFound));
+        String title = String.format("BestDist: %s, Route: %s", bestDistanceFound, Arrays.toString(bestRouteFound));
         updateRouteChart(bestRouteFound, 0, title);
     }
 
