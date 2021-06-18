@@ -10,24 +10,48 @@ public class ReproductiveMethodBySwapping implements ReproductiveMethod {
 
     @Override
     public int[] apply(int[] array) {
-        log.debug("applying reproductive method by swapping two sub-arrays");
+        log.info("applying reproductive method by swapping two sub-arrays");
 
-        int startIndexSubArray1 = 1 + RandomizeUtils.randomNumberBetweenRange(1, array.length / 2);
-        int startIndexSubArray2 = (array.length / 2) + RandomizeUtils.randomNumberZeroOrOne();
+        int chunkLength = RandomizeUtils.randomNumberBetweenInclusiveRange(1, array.length / 2);
+
+        int index1;
+
+        if (chunkLength >= array.length / 3) {
+            index1 = RandomizeUtils.randomNumberBetweenInclusiveRange(0, array.length - (chunkLength * 2));
+        } else {
+            index1 = RandomizeUtils.randomNumberBetweenInclusiveRange(0, array.length - chunkLength);
+        }
+
+        log.info("chunkLength = {}", chunkLength);
+
+        log.info("index1 = {}", index1);
+
+        int index2;
+
+        if (index1 > chunkLength) {
+            int min = 0;
+            int max = index1 - chunkLength;
+            log.info("index1({}) > chunkLength({}): range with values min = {}, max = {}", index1, chunkLength, min, max);
+            index2 = RandomizeUtils.randomNumberBetweenInclusiveRange(min, max);
+        } else {
+            int min = index1 + chunkLength;
+            int max = array.length - chunkLength;
+            log.info("index1({}) < chunkLength({}): range with values min = {}, max = {}", index1, chunkLength, min, max);
+            index2 = RandomizeUtils.randomNumberBetweenInclusiveRange(min, max);
+        }
+
+        log.info("index2 = {}", index2);
+        log.info("original array = {}", array);
+
         int temp;
 
-        log.debug("startIndexSubArray1 = {}, startIndexSubArray2 = {}", startIndexSubArray1, startIndexSubArray2);
-        log.debug("original array = {}", array);
+        for (int i = 0; i < chunkLength; i++) {
+            temp = array[index1 + i];
+            array[index1 + i] = array[index2 + i];
+            array[index2 + i] = temp;
+        }
 
-        temp = array[startIndexSubArray1];
-        array[startIndexSubArray1] = array[startIndexSubArray2];
-        array[startIndexSubArray2] = temp;
-
-        temp = array[startIndexSubArray1 + 1];
-        array[startIndexSubArray1 + 1] = array[startIndexSubArray2 + 1];
-        array[startIndexSubArray2 + 1] = temp;
-
-        log.debug("swapped array = {}", array);
+        log.info("swapped array = {}", array);
 
         return array;
     }

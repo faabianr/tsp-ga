@@ -1,9 +1,11 @@
 package uag.mcc.ai.tsp.util;
 
+import lombok.extern.slf4j.Slf4j;
 import uag.mcc.ai.tsp.model.City;
 
 import java.util.Random;
 
+@Slf4j
 public class RandomizeUtils {
 
     private RandomizeUtils() {
@@ -19,6 +21,17 @@ public class RandomizeUtils {
     public static int randomNumberBetweenRange(int min, int max) {
         Random random = new Random();
         return random.ints(min, max).findAny().getAsInt();
+    }
+
+    /**
+     * Returns a random number between a range. The min and max values are inclusive.
+     *
+     * @param min the min number of the range. This number is inclusive.
+     * @param max the max number of the range. This number is inclusive.
+     * @return a random int generated using the given min and max values.
+     */
+    public static int randomNumberBetweenInclusiveRange(int min, int max) {
+        return randomNumberBetweenRange(min, max + 1);
     }
 
     public static int randomNumberZeroOrOne() {

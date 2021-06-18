@@ -143,10 +143,8 @@ public class GenerationService {
             City targetCity;
             if (i + 1 < route.length) {
                 targetCity = cityService.getCity(route[i + 1]);
-            } else {
-                targetCity = cityService.getCity(route[0]);
+                totalDistance += currentCity.calculateDistanceToCity(targetCity);
             }
-            totalDistance += currentCity.calculateDistanceToCity(targetCity);
         }
 
         return totalDistance;
