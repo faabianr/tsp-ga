@@ -10,7 +10,7 @@ public class ReproductiveMethodBySwapping implements ReproductiveMethod {
 
     @Override
     public int[] apply(int[] array) {
-        log.info("applying reproductive method by swapping two sub-arrays");
+        log.debug("applying reproductive method by swapping two sub-arrays");
 
         int chunkLength = RandomizeUtils.randomNumberBetweenInclusiveRange(1, array.length / 2);
 
@@ -22,26 +22,26 @@ public class ReproductiveMethodBySwapping implements ReproductiveMethod {
             index1 = RandomizeUtils.randomNumberBetweenInclusiveRange(0, array.length - chunkLength);
         }
 
-        log.info("chunkLength = {}", chunkLength);
+        log.debug("chunkLength = {}", chunkLength);
 
-        log.info("index1 = {}", index1);
+        log.debug("index1 = {}", index1);
 
         int index2;
 
         if (index1 > chunkLength) {
             int min = 0;
             int max = index1 - chunkLength;
-            log.info("index1({}) > chunkLength({}): range with values min = {}, max = {}", index1, chunkLength, min, max);
+            log.debug("index1({}) > chunkLength({}): range with values min = {}, max = {}", index1, chunkLength, min, max);
             index2 = RandomizeUtils.randomNumberBetweenInclusiveRange(min, max);
         } else {
             int min = index1 + chunkLength;
             int max = array.length - chunkLength;
-            log.info("index1({}) < chunkLength({}): range with values min = {}, max = {}", index1, chunkLength, min, max);
+            log.debug("index1({}) < chunkLength({}): range with values min = {}, max = {}", index1, chunkLength, min, max);
             index2 = RandomizeUtils.randomNumberBetweenInclusiveRange(min, max);
         }
 
-        log.info("index2 = {}", index2);
-        log.info("original array = {}", array);
+        log.debug("index2 = {}", index2);
+        log.debug("original array = {}", array);
 
         int temp;
 
@@ -51,7 +51,7 @@ public class ReproductiveMethodBySwapping implements ReproductiveMethod {
             array[index2 + i] = temp;
         }
 
-        log.info("swapped array = {}", array);
+        log.debug("swapped array = {}", array);
 
         return array;
     }
